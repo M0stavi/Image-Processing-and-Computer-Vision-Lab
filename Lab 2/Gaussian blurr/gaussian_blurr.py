@@ -32,7 +32,7 @@ k_w = int(input())
 
 kernel = np.zeros((k_h,k_w), np.float32)
 
-sigma = 75.0
+sigma = 1
 
 s = 2.0*sigma*sigma
 
