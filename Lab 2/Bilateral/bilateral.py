@@ -37,13 +37,13 @@ b = kernel.shape[1] // 2
 
 pi = 3.1416
 
-sigma = 1.0
+sigma = 75.0
 
 s = 2*sigma*sigma
 
 for i in range(-a,a+1):
     for j in range(-b,b+1):
-        r = (i*i+j*j)
+        r = math.sqrt(i*i+j*j)
         r/=s
         r = math.exp(-(r))
         r/=(pi*s)
@@ -65,7 +65,7 @@ for i in range(m):
             for y in range(-b,b+1):
                 if i-x>=0 and i-x<m and j-y>=0 and j-y<n:
                     r = img[i][j] - img[i-x][j-y]
-                    r = (r*r)
+                    r = math.sqrt(r*r)
                     r/=s
                     r=math.exp(-(r))
                     r/=(pi*s)
