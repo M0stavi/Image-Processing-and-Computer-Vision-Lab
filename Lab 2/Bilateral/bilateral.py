@@ -14,6 +14,8 @@ path = "F:/Online Class/4-1/zLabs/Vision/rubiks_cube.png"
 
 img = cv.imread(path)
 
+img = cv.resize(img,(300,300))
+
 img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
 plt.imshow(img,'gray')
