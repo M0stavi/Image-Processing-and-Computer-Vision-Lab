@@ -32,7 +32,7 @@ plt.show()
 
 op = img
 
-m = img.shape[1]
+m = int(img.shape[1])
 n = img.shape[2]
 
 
