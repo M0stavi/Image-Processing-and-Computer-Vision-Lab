@@ -38,7 +38,7 @@ plt.title("Input for laplace positive center: ")
 
 plt.show()
 
-kernel = np.array(([0,-1,0],[-1,4,-1],[0,-1,0]), np.float32)
+kernel = np.array(([-1,-1,-1],[-1,8,-1],[-1,-1,-1]), np.float32)
 
 a = kernel.shape[0] // 2
 b = kernel.shape[1] // 2
