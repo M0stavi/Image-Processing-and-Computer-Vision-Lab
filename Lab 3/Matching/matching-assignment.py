@@ -78,7 +78,7 @@ for i in range(1,255):
 for i in range(256):
     cdf_g[i] = round(cdf_g[i]*255)
 
-path = "F:/Online Class/4-1/zLabs/Vision/lab1/lena.png"
+path = "C:/Users/Asus/imagelab/Image-Processing-and-Computer-Vision-Lab/Lab 3/Equalization/in.jpg"
 
 img = cv.imread(path)
 
