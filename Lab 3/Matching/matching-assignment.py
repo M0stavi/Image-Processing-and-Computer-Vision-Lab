@@ -12,9 +12,9 @@ import math
 
 g_a = np.zeros(256,np.float32)
 
-m_a = 87.0
+m_a = 80.0
 
-sd_a = 25.0
+sd_a = 35.0
 
 for i in range(256):
     r = i-m_a
@@ -32,9 +32,9 @@ plt.show()
 
 g_b = np.zeros(256,np.float32)
 
-m_b = 187.0
+m_b = 200.0
 
-sd_b = 30.0
+sd_b = 20.0
 
 for i in range(256):
     r = i-m_b
@@ -78,7 +78,7 @@ for i in range(1,255):
 for i in range(256):
     cdf_g[i] = round(cdf_g[i]*255)
 
-path = "C:/Users/Asus/imagelab/Image-Processing-and-Computer-Vision-Lab/Lab 3/Equalization/in.jpg"
+path = "F:/Online Class/4-1/zLabs/Vision/lab1/lena.png"
 
 img = cv.imread(path)
 
@@ -153,6 +153,17 @@ plt.title("Output histogram")
 
 plt.show()
 
-        
+freq_op = np.zeros(256)
+
+for i in range(img.shape[0]):
+    for j in range(img.shape[1]):
+        pix = int(img[i][j])
+        freq_op[pix]+=1
+
+plt.plot(freq_op)
+
+plt.title("Plot of intensity frequencies of output image:")
+
+plt.show()
 
 
