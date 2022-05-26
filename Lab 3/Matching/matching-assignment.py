@@ -64,8 +64,15 @@ t_fr = gauss.sum()
 
 pdf_g = np.zeros(256,np.float32)
 
+
 for i in range(256):
     pdf_g[i] = fr_g[i]/t_fr
+    
+plt.plot(pdf_g)
+
+plt.title("Added Gaussian function pdf")
+
+plt.show()
 
 cdf_g = np.zeros(256,np.float32)
 
@@ -114,6 +121,12 @@ cdf[0] = pdf[0]
 
 for i in range(1,256):
     cdf[i] = cdf[i-1]+pdf[i]
+    
+plt.plot(cdf)
+
+plt.title("CDF:")
+
+plt.show()
     
 for i in range(256):
     cdf[i] = round(cdf[i]*255.0)

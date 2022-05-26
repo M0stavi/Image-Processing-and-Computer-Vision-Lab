@@ -94,7 +94,7 @@ for h in range(in_p.shape[0]):
                     res=k
                     ch+=1
             if ch >1:
-                m=cdf_r[res]
+                m=res
             op[h][i][j] = 255*m
         
     # cdf = cdf_i
