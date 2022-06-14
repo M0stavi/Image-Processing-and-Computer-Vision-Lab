@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Apr 24 15:44:13 2022
+Created on Wed Jun  8 10:47:43 2022
 
 @author: Asus
 """
@@ -9,6 +9,12 @@ import cv2 as cv
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+
+def scale(img):
+    mn = img.min()
+    mx = img.max()
+    img = ((img-mn)*(mx-mn))*255
+    return img.astype(np.float32)
 
 path = "F:/Online Class/4-1/zLabs/Vision/rubiks_cube.png"
 
@@ -32,7 +38,9 @@ k_w = int(input())
 
 kernel = np.zeros((k_h,k_w), np.float32)
 
-sigma = np.sqrt(0.5)
+delta = np.zeros((k_h,k_w), np.float32)
+
+sigma = 1
 
 s = 2.0*sigma*sigma
 
@@ -40,6 +48,8 @@ pi = 3.1416
 
 a = kernel.shape[0] // 2
 b = kernel.shape[1] // 2
+
+delta[a][b] = 1
 
 for i in range(-a, a+1):
     for j in range(-b,b+1):
@@ -52,7 +62,7 @@ for i in range(-a, a+1):
 print("kernel")
 
 for i in range(k_h):
-    print(kernel[i])
+    print(delta[i])
         
 m = img.shape[0]
 n = img.shape[1]
@@ -60,6 +70,8 @@ op = np.zeros((m,n), np.float32)
 ksum = kernel.sum()
 
 print('ksum',ksum)
+
+kernel = delta-kernel
 
 for i in range(m):
     for j in range(n):
@@ -72,6 +84,8 @@ for i in range(m):
                     val+=0
         val/=ksum
         op[i][j] = val
+        
+op = scale(op)
 
 plt.imshow(op,'gray')
 plt.title("Output for gaussian blurr")

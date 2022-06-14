@@ -44,10 +44,6 @@ plt.imshow(filt,'gray')
 plt.title("Homomorphic filter:")
 plt.show()
 
-# f = cv.dft(np.float32(img),flags=cv.DFT_COMPLEX_OUTPUT)
-
-# magnitude = np.log1p(cv.magnitude(dft[:,:,0],dft[:,:,1]))
-
 f = np.fft.fft2(img)
 
 shift = np.fft.fftshift(f)
