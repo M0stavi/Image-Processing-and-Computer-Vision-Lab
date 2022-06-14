@@ -34,10 +34,14 @@ plt.show()
 
 # erotion
 
-kernel = np.ones((3,3),np.float32)
+k_h = int(input("Enter kernel height: "))
 
-a = kernel.shape[0] // 2
-b = kernel.shape[1] // 2
+k_w = int(input("Enter kernel weidth: "))
+
+a = k_h // 2
+b = k_w // 2
+
+kernel = np.ones((k_h,k_w),np.float32)
 
 m = img.shape[0]
 n = img.shape[1]
