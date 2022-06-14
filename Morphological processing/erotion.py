@@ -10,65 +10,56 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
-img = np.zeros((5,6),np.float32)
+path = 'C:/Users/Asus/Desktop/erd.jpg'
 
-for i in range(6):
-    img[0][i] = 1
+img = cv.imread(path)
 
-for i in range(6):
-    img[4][i] = 1
-    
-img[1][1] = 1
+img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
-img[1][4] = 1
+plt.imshow(img,'gray')
 
-img[3][1] = 1
+plt.title("Input for erotion")
 
-img[3][4] = 1
+plt.show()
 
-for i in range(5):
-    img[i][0] = 1
-    
-for i in range(5):
-    img[i][5] = 1
+t, img = cv.threshold(img, 100, 255, cv.THRESH_BINARY)
 
-print(img)
+img=img//255
 
-s = np.ones((3,1),np.float32)
+plt.imshow(img,'gray')
 
-m1 = img.shape[0]
-n1 = img.shape[1]
+plt.title("Thresholded Image")
 
-a = s.shape[0]//2
-b = s.shape[1] // 2
+plt.show()
 
-img = cv.copyMakeBorder(img, a, a, b, b, cv.BORDER_CONSTANT, (0,0,0))
+# erotion
 
-op = np.zeros((img.shape[0],img.shape[1]), np.float32)
+kernel = np.ones((3,3),np.float32)
+
+a = kernel.shape[0] // 2
+b = kernel.shape[1] // 2
 
 m = img.shape[0]
 n = img.shape[1]
+
+op = np.zeros((m,n), np.float32)
 
 for i in range(m):
     for j in range(n):
         flag = 1
         for x in range(-a,a+1):
             for y in range(-b,b+1):
-                if x+i >= 0 and x+i <m and j+y>=0 and j+y<n:
-                    if img[i+x][j+y] != s[a+x][b+y]:
+                if x+i>=0 and x+i<m and j+y>=0 and j+y<n:
+                    if img[i+x][j+y] != kernel[a+x][b+y]:
                         flag = 0
-        
         if flag:
             op[i][j] = 1
         else:
             op[i][j] = 0
-            
-opf = np.zeros((m1,n1),np.float32)
 
-for i in range(a,m-a):
-    for j in range(b,n-b):
-        opf[i-a][j-b] = op[i][j]
 
-print(opf)
-                        
-                    
+plt.imshow(op,'gray')
+
+plt.title("Erotion output")
+
+plt.show()
