@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
-path = 'C:/Users/Asus/Desktop/erd.jpg'
+path = 'C:/Users/Asus/imagelab/Image-Processing-and-Computer-Vision-Lab/Morphological processing/Erotion/Binary/in2.png'
 
 img = cv.imread(path)
 
