@@ -10,98 +10,50 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-path = "F:/Online Class/4-1/zLabs/Vision/lab1/lena.png"
+path = "C:/Users/Asus/imagelab/Image-Processing-and-Computer-Vision-Lab/Lab 5/CW/Lab 5/sample1.bmp"
 
 img = cv.imread(path)
 
-img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+img = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
 
 plt.imshow(img,'gray')
 
-plt.show()
+plt.show()    
 
-g1 = np.zeros(256,np.float32)
+t,img = cv.threshold(img,180,255,cv.THRESH_BINARY)
 
-g2 = np.zeros(256,np.float32)
+img = img//255
 
-freq = np.zeros(256,np.float32)
-pdf = np.zeros(256,np.float32)
-cdf =np.zeros(256,np.float32)
+img = img.astype(np.uint8)
 
-m1 = 80
-sd1= 25
+img = 1-img
 
-m2 = 200
-sd2 = 15
+plt.imshow(img,'gray')
 
-for i in range(256):
-    r = np.exp(-(((i-m1)**2)/(2*sd1**2)))/(sd1*np.sqrt(2*np.pi))
-    g1[i] = r
+plt.show()  
+
+kernel = np.ones((3,3),np.uint8)
+
+op = np.zeros((img.shape[0],img.shape[1]),np.uint8)
+k=0
+while(1):
+    er = cv.erode(img,kernel,iterations = k)
+    s = er.sum()
+    if s==0:
+        break
+    er = er.astype(np.uint8)
     
-plt.plot(g1)
-plt.show()
-
-for i in range(256):
-    r = np.exp(-(((i-m2)**2)/(2*sd2**2)))/(sd2*np.sqrt(2*np.pi))
-    g2[i] = r
+    opn = cv.morphologyEx(er,cv.MORPH_OPEN,kernel)
     
-plt.plot(g2)
-plt.show()
-
-g = g1+g2
-
-for i in range(256):
-    pdf[i] = g[i]/g.sum()
+    opn = opn.astype(np.uint8)
     
-cdf[0] = pdf[0]
-
-for i in range(1,256):
-    cdf[i] = cdf[i-1]+pdf[i]
+    sk = er-opn
     
-cdfg = cdf
-
-pdf = np.zeros(256,np.float32)
-cdf =np.zeros(256,np.float32)
-
-for i in range(img.shape[0]):
-    for j in range(img.shape[1]):
-        pix= np.round(img[i][j])
-        freq[pix] += 1
-        
-plt.hist(img.ravel(),256,(0,256))
-plt.show()
-
-for i in range(256):
-    pdf[i] = freq[i]/(img.shape[0]*img.shape[1])
+    sk = sk.astype(np.uint8)
     
-cdf[0] = pdf[0]
-
-for i in range(1,256):
-    cdf[i]  = cdf[i-1]+pdf[i]
+    op = np.bitwise_or(op,sk)
+    k+=1
     
-cdf = np.round(cdf*255)
-cdfg = np.round(cdfg*255)  
-for i in range(256):
-    m = cdf[i]
-    dis = 1000000.0
-    res = i
-    for j in range(256):
-        x = np.abs(cdfg[j] - m)
-        
-        if x<dis:
-            dis= x
-            res=j
-    
-    cdf[i] = res
-    
-
-
-for i in range(img.shape[0]):
-    for j in range(img.shape[1]):
-        pix = np.round(img[i][j])
-        img[i][j] = cdf[pix]
-        
-plt.hist(img.ravel(),256,(0,256))
+plt.imshow(op, 'gray')
 
 plt.show()
-        
