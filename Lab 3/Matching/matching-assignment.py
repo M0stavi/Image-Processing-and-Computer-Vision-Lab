@@ -12,7 +12,7 @@ import math
 
 g_a = np.zeros(256,np.float32)
 
-m_a = 80.0
+m_a = 100.0
 
 sd_a = 35.0
 
