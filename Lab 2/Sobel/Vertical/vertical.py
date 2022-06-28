@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
-path = "F:/Online Class/4-1/zLabs/Vision/ein.jpg"
+path = "lena.png"
 
 img = cv.imread(path)
 
@@ -40,12 +40,12 @@ for i in range(m):
                 else:
                     op[i][j]+=0
                     
-for i in range(m):
-    for j in range(n):
-        if op[i][j] > 255:
-            op[i][j] = 255
-        if op[i][j] < 0:
-            op[i][j] = 0
+# for i in range(m):
+#     for j in range(n):
+#         if op[i][j] > 255:
+#             op[i][j] = 255
+#         if op[i][j] < 0:
+#             op[i][j] = 0
                     
 
 plt.imshow(op, 'gray')

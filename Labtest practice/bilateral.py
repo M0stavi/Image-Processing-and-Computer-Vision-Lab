@@ -20,53 +20,40 @@ plt.imshow(img,'gray')
 
 plt.show()
 
-img = cv.resize(img,(250,250))
+sig = 1
+s = 2*sig*sig
 
-plt.imshow(img,'gray')
+kernel = np.zeros((5,5),np.float32)
 
-plt.show()
-
-ks = int(input("Enter kernel size: "))
-
-g = np.zeros((ks,ks),np.float32)
-
-a = ks//2
-b = ks//2
-
-sig = ks//5
-
-s = 2*sig**2
+a = kernel.shape[0] // 2
+b = kernel.shape[1] // 2
 
 for i in range(-a,a+1):
     for j in range(-b,b+1):
-        r = i*i+j*j
-        r/=s
-        r = np.exp(-(r))
-        r/=(np.pi*s)
-        g[i+a][j+b] = r
-        
-# for i in range(5):
-#     print(g[i])
-        
-
+        r = np.exp(-(i*i+j*j)/s)/((2*np.pi)*sig*sig)
+        kernel[a+i][b+j] = r
+ 
+for i in range(5):
+    print(kernel[i])
+    
 m = img.shape[0]
 n = img.shape[1]
 
-op = np.zeros((m,n),np.float32)
 
+    
+op = np.zeros((m,n),np.float32)
+    
 for i in range(m):
     for j in range(n):
-        kernel = np.zeros((ks,ks),np.float32)
-        for x in range(-a,a+1):
-            for y in range(-b,b+1):
-                if i+x >=0 and i+x<m and j+y>=0 and j+y<n:
-                    kernel[a+x][b+y] = g[a+x][b+y]*img[i+x][j+y]
+        norm = 0
         for x in range(-a,a+1):
             for y in range(-b,b+1):
                 if i-x>=0 and i-x<m and j-y>=0 and j-y<n:
-                    op[i][j]+=kernel[a+x][b+y]*img[i-x][j-y]
-
-
+                    dif = img[i][j]-img[i-x][j-y]
+                    r = np.exp(-(dif**2/2*sig**2))*kernel[a+x][b+y]
+                    norm+=r
+                    op[i][j]+=r*img[i-x][j-y]
+        op[i][j]/=norm
+        
 plt.imshow(op,'gray')
-
 plt.show()

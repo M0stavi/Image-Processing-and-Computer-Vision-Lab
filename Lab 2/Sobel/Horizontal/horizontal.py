@@ -9,7 +9,7 @@ import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 
-path = "F:/Online Class/4-1/zLabs/Vision/ein.jpg"
+path = "lena.png"
 
 img = cv.imread(path)
 
