@@ -122,7 +122,7 @@ mag = np.abs(sft)
 
 phase=np.angle(sft)
 
-mag=mag*ni
+mag=mag*notch
 
 op = np.multiply(mag,np.exp(1j*phase))
 
