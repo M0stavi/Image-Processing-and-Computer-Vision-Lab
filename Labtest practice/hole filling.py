@@ -103,7 +103,7 @@ while 1:
 
 op = np.zeros((img.shape[0],img.shape[1]),np.uint8)
 
-op = np.bitwise_or(x1,img)
+op = np.bitwise_or(x0,img)
 
 plt.imshow(op,'gray')
 plt.show()

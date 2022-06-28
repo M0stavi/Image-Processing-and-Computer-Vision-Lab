@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-path = "hf.jpg"
+path = 'homo.jpg'
 
 img = cv.imread(path)
 
@@ -20,11 +20,45 @@ plt.imshow(img,'gray')
 
 plt.show()
 
-t,img = cv.threshold(img,180,255,cv.THRESH_BINARY)
+mm = img.shape[0]
 
-img = img//255
+nn = img.shape[1]
 
-plt.imshow(img,'gray')
+h = np.zeros((mm,nn),np.float32)
+
+d0=50
+c=0.1
+gh=1.2
+gl=0.5
+
+for i in range(mm):
+    for j in range(nn):
+        x = (i-mm//2)**2
+        y = (j-nn//2)**2
+        d = x+y
+        r = (gh-gl)*(1-np.exp(-(c*(d/d0**2))))+gl
+        h[i][j]= r
+        
+plt.imshow(h,'gray')
 
 plt.show()
 
+f = np.fft.fft2(img)
+
+sft=np.fft.fftshift(f)
+
+mag = np.abs(sft)
+
+phase = np.angle(sft)
+
+mag = mag*h
+
+op=np.multiply(mag,np.exp(1j*phase))
+
+op= np.fft.ifftshift(op)
+
+op = np.real(np.fft.ifft2(op))
+
+plt.imshow(op,'gray')
+
+plt.show()
