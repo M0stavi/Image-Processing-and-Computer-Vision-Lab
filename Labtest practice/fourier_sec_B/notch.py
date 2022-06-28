@@ -97,20 +97,19 @@ nn = img.shape[1]//2
 
 notch = np.zeros((img.shape[0],img.shape[1]),np.float32)
 
-d0=50
-n=2
+d0=25
+n=1
 
-for u in range(img.shape[0]):
-    for v in range(img.shape[1]):
+for i in range(img.shape[0]):
+    for j in range(img.shape[1]):
+        prod = 1
         for k in range(4):
-            dk = np.sqrt((u-mm-xx[k])**2+(v-nn-yy[k])**2)
-            dkk = np.sqrt((u-mm+xx[k])**2+(v-nn+yy[k])**2)
-            if dk>d0 or dkk>d0:
-                if dk==0:
-                    dk=1
-                if dkk == 0:
-                    dkk = 1
-                notch[u][v] += (1/(1+(d0/dk)**(2*n)))+(1/(1+(d0/dkk)**(2*n)))
+            duv = np.sqrt((i - mm - (xx[k] - mm))**2 + (j - nn - (yy[k] - nn))**2)
+            dmuv = np.sqrt((i - mm + (xx[k] - mm))**2 + (j - nn + (yy[k] - nn))**2)
+            
+            val = (1 / (1 + (d0 / duv) * (2*n))) * (1 / (1 + (d0 / dmuv) * (2*n)))
+            prod *= val
+        notch[i, j] = prod
 
 ni = np.fft.ifftshift(notch)
 # ni = np.fft.fftshift(ni)
