@@ -4,61 +4,109 @@ Created on Mon Jun 27 22:06:05 2022
 
 @author: Asus
 """
-import cv2
+import cv2 as cv
 import matplotlib.pyplot as plt
 import numpy as np
 
-img = cv2.imread('pi.jpg', 0)
+xx = []
+yy = []
 
-plt.imshow(img, cmap='gray')
-plt.title('Input')
+def click_event(event,x,y,a,b):
+    if event == cv.EVENT_LBUTTONDOWN:
+        xx.append(y)
+        yy.append(x)
+        
+
+path = 'pi.jpg'
+
+img = cv.imread(path)
+
+img = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
+
+plt.imshow(img,'gray')
+
 plt.show()
 
-dft = cv2.dft(np.float32(img), flags=cv2.DFT_COMPLEX_OUTPUT)
-magnitude = np.log(cv2.magnitude(dft[:, :, 0], dft[:, :, 1]))
+d0=25
+n=1
 
-plt.imshow(magnitude, cmap='gray')
-plt.title('Magnitude')
-plt.show()
+imx = np.fft.fft2(img)
 
-dft_shift = np.fft.fftshift(dft)
-magnitude_specturm = np.log(cv2.magnitude(dft_shift[:, :, 0], dft_shift[:, :, 1]))
+sft = np.fft.fftshift(imx)
 
-plt.imshow(magnitude_specturm, cmap='gray')
-plt.title('Magnitude Specturm after Shift')
-plt.show()
+phase = np.angle(sft)
 
-d0 = 25
-n = 1
+magx = np.abs(sft)
 
-butter_filter = np.ones(img.shape)
+k = 0
 
-center_i, center_j = img.shape[0] // 2, img.shape[1] // 2
+while 1:
+    if k==3:
+        break
+    magx = np.log(magx)
+    
+    k+=1
+    
+cv.imshow('image',magx)
 
-u = [380, 235, 155, 310]
-v = [277, 470, 400, 400]
+cv.setMouseCallback('image', click_event)
 
-for i in range(img.shape[0]):
-    for j in range(img.shape[1]):
+cv.waitKey(0)
+
+cv.destroyAllWindows()
+
+cv.imshow('image',magx)
+
+cv.setMouseCallback('image', click_event)
+
+cv.waitKey(0)
+
+cv.destroyAllWindows()
+
+cv.imshow('image',magx)
+
+cv.setMouseCallback('image', click_event)
+
+cv.waitKey(0)
+
+cv.destroyAllWindows()
+
+cv.imshow('image',magx)
+
+cv.setMouseCallback('image', click_event)
+
+cv.waitKey(0)
+
+cv.destroyAllWindows()
+
+m = img.shape[0]
+n = img.shape[1]
+
+notch = np.zeros((m,n),np.float32)
+
+for u in range(m):
+    for v in range(n):
         prod = 1
         for k in range(4):
-            duv = np.sqrt((i - center_i - (u[k] - center_i))**2 + (j - center_j - (v[k] - center_j))**2)
-            dmuv = np.sqrt((i - center_i + (u[k] - center_i))**2 + (j - center_i + (v[k] - center_j))**2)
-            
-            val = (1 / (1 + (d0 / duv) * (2*n))) * (1 / (1 + (d0 / dmuv) * (2*n)))
-            prod *= val
-        butter_filter[i, j] = prod
+            d = np.sqrt((u-m//2-(xx[k]-m//2))**2+(v-n//2-(yy[k]-n//2))**2)
+            dk = np.sqrt((u-m//2+(xx[k]-m//2))**2+(v-n//2+(yy[k]-n//2))**2)
+            prod*=1/ ( ( 1+(d0/d)**(2*n)  )*( 1+(d0/dk)**(2*n) ) )
+        notch[u][v] = prod
         
-plt.imshow(butter_filter, cmap='gray')
-plt.title('Notch Filer')
+plt.imshow(notch,'gray')
+
 plt.show()
 
-dft_shift[:, :, 0] = dft_shift[:, :, 0] * butter_filter
+mag = np.abs(sft)
 
-f_ishift = np.fft.ifftshift(dft_shift)
-img_back = cv2.idft(f_ishift)
-img_back1 = cv2.magnitude(img_back[:, :, 0], img_back[:, :, 1])
+mag = mag*notch
 
-plt.imshow(img_back1, cmap='gray')
-plt.title('Output')
+op = np.multiply(mag,np.exp(1j*phase))
+
+op  =np.fft.ifftshift(op)
+
+op = np.real(np.fft.ifft2(op))
+
+plt.imshow(op,'gray')
+
 plt.show()
