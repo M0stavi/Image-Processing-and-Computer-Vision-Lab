@@ -39,7 +39,7 @@ b = kernel.shape[1] // 2
 
 pi = 3.1416
 
-sigma = 75.0
+sigma = k_h//5
 
 s = 2*sigma*sigma
 

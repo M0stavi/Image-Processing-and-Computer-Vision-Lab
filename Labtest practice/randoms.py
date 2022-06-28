@@ -10,52 +10,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-xx= []
-yy=[]
+def scale(img):
+    g_m = img-img.min()
+    g_s = (g_m/g_m.max())*255
+    return g_s.astype(np.float32)
 
-def click_event(event, x, y, flags, params):
- 
-    # checking for left mouse clicks
-    if event == cv.EVENT_LBUTTONDOWN:
- 
-        # displaying the coordinates
-        # on the Shell
-        print(x, ' ', y)
-        xx.append(x)
-        yy.append(y)
-        # print(uk)
- 
-        # displaying the coordinates
-        # on the image window
-        font = cv.FONT_HERSHEY_SIMPLEX
-        cv.putText(img, str(x) + ',' +
-                    str(y), (x,y), font,
-                    1, (255, 0, 0), 2)
-        cv.imshow('image', img)
- 
-    # checking for right mouse clicks    
-    if event==cv.EVENT_RBUTTONDOWN:
- 
-        # displaying the coordinates
-        # on the Shell
-        print(x, ' ', y)
-        
- 
-        # displaying the coordinates
-        # on the image window
-        font = cv.FONT_HERSHEY_SIMPLEX
-        b = img[y, x, 0]
-        g = img[y, x, 1]
-        r = img[y, x, 2]
-        cv.putText(img, str(b) + ',' +
-                    str(g) + ',' + str(r),
-                    (x,y), font, 1,
-                    (255, 255, 0), 2)
-        cv.imshow('image', img)
-        
-path = 'pi.jpg'
+path ='md.png'
+
 img = cv.imread(path)
-
 
 img = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
 
@@ -64,101 +26,89 @@ plt.imshow(img,'gray')
 plt.show()
 
 
-f = np.fft.fft2(img)
+k_h = 7
 
-sft = np.fft.fftshift(f)
+kernel = np.zeros((k_h,k_h),np.float32)
 
-mag = np.abs(sft)
+for i in range(k_h):
+    kernel[i][i] = 1
+    
+plt.imshow(kernel,'gray')
 
-mag=np.log(mag)
+plt.show()
+  
+m = img.shape[0]
+n = img.shape[0]
 
-plt.imshow(mag,'gray')
+a = kernel.shape[0]//2
+b = kernel.shape[0]//2
+    
+op = np.zeros((m,n),np.float32)
+
+for i in range(m):
+    for j in range(n):
+        for x in range(-a,a+1):
+            for y in range(-b,b+1):
+                if i-x>=0 and i-x<m and j-y>=0 and j-y<n:
+                    op[i][j]+=img[i-x][j-y]*kernel[a+x][b+y]
+                else:
+                    op[i][j]+=0
+                    
+plt.imshow(op,'gray')
 
 plt.show()
 
-k=0
+x = int(img.shape[0]//2-kernel.shape[0]//2)
+y = int(img.shape[1]//2-kernel.shape[1]//2)
 
-while 1:
-    if k==2:
-        break
-    mag = np.log(mag)
-    k+=1
+print(x,y)
+
     
-cv.imshow('image',mag)
-    
+h = np.pad(kernel,(x,y),'constant',constant_values=0)
 
-cv.setMouseCallback('image',click_event)
 
-cv.waitKey(0)
+# h = cv.rotate(h, cv.ROTATE_90_CLOCKWISE)
 
-cv.destroyAllWindows()
 
-cv.imshow('image',mag)
-    
+img = cv.resize(img,(358,358))
 
-cv.setMouseCallback('image',click_event)
+print(img.shape)
 
-cv.waitKey(0)
+print(h.shape)
 
-cv.destroyAllWindows()
+h = np.fft.fft2(h)
 
-cv.imshow('image',mag)
-    
+for i in range(h.shape[0]):
+    for j in range(h.shape[1]):
+        if h[i][j] < 20:
+            h[i][j] = .000000001
 
-cv.setMouseCallback('image',click_event)
+im = np.fft.fft2(img)
 
-cv.waitKey(0)
+# h = np.fft.fftshift(h)
 
-cv.destroyAllWindows()
+mh = np.abs(h)
 
-cv.imshow('image',mag)
-    
+mi = np.fft.fftshift(im)
 
-cv.setMouseCallback('image',click_event)
+mi =np.abs(mi)
 
-cv.waitKey(0)
+phase = np.angle(mi)
 
-cv.destroyAllWindows()
+plt.imshow(np.log(mi),'gray')
 
-mm = img.shape[0]//2
-nn = img.shape[1]//2
-
-notch = np.zeros((img.shape[0],img.shape[1]),np.float32)
-
-d0=50
-n=2
-
-for u in range(img.shape[0]):
-    for v in range(img.shape[1]):
-        for k in range(4):
-            dk = np.sqrt((u-mm-xx[k])**2+(v-nn-yy[k])**2)
-            dkk = np.sqrt((u-mm+xx[k])**2+(v-nn+yy[k])**2)
-            if dk>d0 or dkk>d0:
-                if dk==0:
-                    dk=1
-                if dkk == 0:
-                    dkk = 1
-                notch[u][v] += (1/(1+(d0/dk)**(2*n)))+(1/(1+(d0/dkk)**(2*n)))
-
-ni = np.fft.fftshift(notch)
-plt.imshow(ni,'gray')
-plt.show()
-plt.imshow(notch,'gray')
 plt.show()
 
-mag = np.abs(sft)
+mi = mi/mh
 
-phase=np.angle(sft)
+op = np.multiply(mi,np.exp(1j*phase))
 
-mag=mag*ni
-
-op = np.multiply(mag,np.exp(1j*phase))
-
-op=np.fft.ifftshift(op)
+op = np.fft.ifftshift(op)
 
 op = np.real(np.fft.ifft2(op))
 
+op = scale(op)
+
 plt.imshow(op,'gray')
+
 plt.show()
-
-

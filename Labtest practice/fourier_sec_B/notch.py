@@ -21,37 +21,9 @@ def click_event(event, x, y, flags, params):
         # displaying the coordinates
         # on the Shell
         print(x, ' ', y)
-        xx.append(x)
-        yy.append(y)
-        # print(uk)
- 
-        # displaying the coordinates
-        # on the image window
-        font = cv.FONT_HERSHEY_SIMPLEX
-        cv.putText(img, str(x) + ',' +
-                    str(y), (x,y), font,
-                    1, (255, 0, 0), 2)
-        cv.imshow('image', img)
- 
-    # checking for right mouse clicks    
-    if event==cv.EVENT_RBUTTONDOWN:
- 
-        # displaying the coordinates
-        # on the Shell
-        print(x, ' ', y)
+        xx.append(y)
+        yy.append(x)
         
- 
-        # displaying the coordinates
-        # on the image window
-        font = cv.FONT_HERSHEY_SIMPLEX
-        b = img[y, x, 0]
-        g = img[y, x, 1]
-        r = img[y, x, 2]
-        cv.putText(img, str(b) + ',' +
-                    str(g) + ',' + str(r),
-                    (x,y), font, 1,
-                    (255, 255, 0), 2)
-        cv.imshow('image', img)
         
 path = 'pi.jpg'
 img = cv.imread(path)
@@ -140,7 +112,8 @@ for u in range(img.shape[0]):
                     dkk = 1
                 notch[u][v] += (1/(1+(d0/dk)**(2*n)))+(1/(1+(d0/dkk)**(2*n)))
 
-ni = np.fft.fftshift(notch)
+ni = np.fft.ifftshift(notch)
+# ni = np.fft.fftshift(ni)
 plt.imshow(ni,'gray')
 plt.show()
 plt.imshow(notch,'gray')
