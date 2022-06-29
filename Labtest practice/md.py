@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun 27 22:06:05 2022
+Created on Wed Jun 29 04:10:06 2022
 
 @author: Asus
 """
-
 
 import cv2 as cv
 import numpy as np
@@ -19,16 +18,6 @@ img = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
 
 m = img.shape[0]
 n = img.shape[1]
-
-gauss = np.random.normal(0,20,img.size)
-
-gauss = gauss.reshape(img.shape[0],img.shape[1])
-# x = cv.add(img,gauss)
-img = img+gauss
-
-plt.imshow(img,'gray')
-
-plt.show()
 
 k = np.zeros((5,5),np.float32)
 
@@ -68,13 +57,9 @@ plt.show()
 g = np.fft.fft2(bl)
 h = np.fft.fft2(kp)
 
-nsr = 0.0000000005
 
-mg = np.abs(h)
 
 F_hat = np.divide(g,h)
-
-F_hat /=(1+(nsr/(mg**2)))
 
 f_hat = np.real(np.fft.ifft2(F_hat))
 
@@ -85,5 +70,3 @@ plt.imshow(op,'gray')
 plt.show()
 
 # for i in range()
-                    
-        

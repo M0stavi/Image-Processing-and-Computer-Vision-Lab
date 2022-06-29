@@ -29,7 +29,7 @@ plt.imshow(img,'gray')
 plt.show()
 
 d0=25
-n=1
+nn=1
 
 imx = np.fft.fft2(img)
 
@@ -85,13 +85,16 @@ n = img.shape[1]
 
 notch = np.zeros((m,n),np.float32)
 
+print(xx)
+print(yy)
+
 for u in range(m):
     for v in range(n):
         prod = 1
         for k in range(4):
             d = np.sqrt((u-m//2-(xx[k]-m//2))**2+(v-n//2-(yy[k]-n//2))**2)
             dk = np.sqrt((u-m//2+(xx[k]-m//2))**2+(v-n//2+(yy[k]-n//2))**2)
-            prod*=1/ ( ( 1+(d0/d)**(2*n)  )*( 1+(d0/dk)**(2*n) ) )
+            prod*=1/ ( ( 1+(d0/d)**(2*nn)  )*( 1+(d0/dk)**(2*nn) ) )
         notch[u][v] = prod
         
 plt.imshow(notch,'gray')
